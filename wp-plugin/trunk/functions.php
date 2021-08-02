@@ -5,9 +5,9 @@ if(!defined('ABSPATH')){
   die('404 Not Found');
 }
 
-if(!class_exists('AspieSoft_Functions_v1_2')){
+if(!class_exists('AspieSoft_Functions_v1_3')){
 
-  class AspieSoft_Functions_v1_2{
+  class AspieSoft_Functions_v1_3{
 
     public static function startsWith($haystack, $needle){
       return substr_compare($haystack, $needle, 0, strlen($needle)) === 0;
@@ -55,6 +55,19 @@ if(!class_exists('AspieSoft_Functions_v1_2')){
       foreach($attr as $v){
         if($v !== null){
           return $v;
+        }
+      }
+      return null;
+    }
+
+    public static function loadPluginFile($name){
+      $path = plugin_dir_path(__FILE__).'src/'.$name.'.php';
+      if(file_exists($path)){
+        $name = str_replace('-', '', ucwords($name, '-'));
+        require_once($path);
+        $pName = str_replace('-', '_', sanitize_html_class($this->plugin['pluginName']));
+        if(class_exists('AspieSoft_'.$pName.'_'.$name)){
+          return ${'aspieSoft_'.$pName.'_'.$name};
         }
       }
       return null;
@@ -191,7 +204,7 @@ if(!class_exists('AspieSoft_Functions_v1_2')){
 
   }
 
-  global $aspieSoft_Functions_v1_2;
-  $aspieSoft_Functions_v1_2 = new AspieSoft_Functions_v1_2();
+  global $AspieSoft_Functions_v1_3;
+  $AspieSoft_Functions_v1_3 = new AspieSoft_Functions_v1_3();
 
 }

@@ -6,7 +6,7 @@
 Plugin Name: AspieSoft Plugin Template
 Plugin URI: https://github.com/AspieSoft/aspiesoft-plugin-template
 Description: Short Plugin Description.
-Version: 1.1
+Version: 1.0
 Author: AspieSoft
 Author URI: https://www.aspiesoft.com
 License: GPLv2 or later
@@ -68,15 +68,29 @@ if(!class_exists('AspieSoft_PluginTemplate')){
       // also helps with testing the plugin in development, because the backend won't crash if the main plugin file has php errors
       //todo: add visual of embed to frontend (may also add widget/button if possible)
       //todo: embed images
+
       if(!is_admin()){
-        require_once(plugin_dir_path(__FILE__).'src/main.php');
+        $this->loadPluginFile('main');
+      }else if(is_admin()){
+        $this->loadPluginFile('admin');
+      }
+
+    }
+
+
+    private function loadPluginFile($name){
+      $path = plugin_dir_path(__FILE__).'src/'.$name.'.php';
+      if(file_exists($path)){
+        $name = str_replace('-', '', ucwords($name, '-'));
+        require_once($path);
         $pName = str_replace('-', '_', sanitize_html_class($this->plugin['pluginName']));
-        if(class_exists('AspieSoft_'.$pName.'_Main')){
-          ${'aspieSoft_'.$pName.'_Main'}->init($this->plugin);
-          ${'aspieSoft_'.$pName.'_Main'}->start();
+        if(class_exists('AspieSoft_'.$pName.'_'.$name)){
+          ${'aspieSoft_'.$pName.'_'.$name}->init($this->plugin);
+          ${'aspieSoft_'.$pName.'_'.$name}->start();
         }
       }
     }
+
 
     function register(){
       // ensure get_plugin_data function is loaded on frontend
@@ -104,8 +118,8 @@ if(!class_exists('AspieSoft_PluginTemplate')){
       // multiple plugins can use same file in the future (without functions.php class being loaded twice)
       // version added so updates to functions can still occur without breaking other plugins
       require_once(plugin_dir_path(__FILE__).'functions.php');
-      global $AspieSoft_Functions_v1_2;
-      self::$func = $AspieSoft_Functions_v1_2;
+      global $AspieSoft_Functions_v1_3;
+      self::$func = $AspieSoft_Functions_v1_3;
 
       self::$options = self::$func::options($this->plugin);
       self::$optionsGlobal = self::$func::options(array('setting' => 'global'));
@@ -121,25 +135,11 @@ if(!class_exists('AspieSoft_PluginTemplate')){
       }
 
       add_action('wp_enqueue_scripts', array($this, 'enqueue'));
-      add_action('admin_menu', array($this, 'add_admin_pages'));
-      add_filter("plugin_action_links_$this->pluginName", array($this, 'settings_link'));
-    }
 
-    function disableWpEmbedEditor($plugins){
-      return array_diff($plugins, array('wpview'));
-    }
-
-    function disableWpEmbedInit(){
-      remove_action('rest_api_init', 'wp_oembed_register_route');
-      remove_filter('oembed_dataparse', 'wp_filter_oembed_result', 10);
-      remove_action('wp_head', 'wp_oembed_add_discovery_links');
-      remove_action('wp_head', 'wp_oembed_add_host_js');
-    }
-
-    function disableWpEmbedFooter(){
-      wp_dequeue_script('wp-embed');
-      remove_action('wp_enqueue_scripts', 'wp-embed', 9999);
-      remove_filter('the_content', array($GLOBALS['wp_embed'], 'autoembed'), 8);
+      if(file_exists(plugin_dir_path(__FILE__).'src/settings.php')){
+        add_action('admin_menu', array($this, 'add_admin_pages'));
+        add_filter("plugin_action_links_$this->pluginName", array($this, 'settings_link'));
+      }
     }
 
     function settings_link($links){
@@ -156,12 +156,16 @@ if(!class_exists('AspieSoft_PluginTemplate')){
     }
 
     public function activate(){
-      $this->enableOptionsAutoload();
+      if(file_exists(plugin_dir_path(__FILE__).'src/settings.php')){
+        $this->enableOptionsAutoload();
+      }
       //flush_rewrite_rules();
     }
 
     public function deactivate(){
-      $this->disableOptionsAutoload();
+      if(file_exists(plugin_dir_path(__FILE__).'src/settings.php')){
+        $this->disableOptionsAutoload();
+      }
       //flush_rewrite_rules();
     }
 

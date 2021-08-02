@@ -15,14 +15,16 @@ if(!class_exists('AspieSoft_PluginTemplate_Main')){
     public $plugin;
     private static $func;
     private static $options;
+    private static $optionsGlobal;
 
     public function init($pluginData){
       // get plugin data and load common functions
       $this->plugin = $pluginData;
       require_once(plugin_dir_path(__FILE__).'../functions.php');
-      global $AspieSoft_Functions_v1_2;
-      self::$func = $AspieSoft_Functions_v1_2;
+      global $AspieSoft_Functions_v1_3;
+      self::$func = $AspieSoft_Functions_v1_3;
       self::$options = self::$func::options($this->plugin);
+      self::$optionsGlobal = self::$func::options(array('setting' => 'global'));
     }
 
     public function start(){
