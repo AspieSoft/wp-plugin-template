@@ -60,12 +60,12 @@ if(!class_exists('AspieSoft_Functions_v1_3')){
       return null;
     }
 
-    public static function loadPluginFile($name){
+    public static function loadPluginFile($name, $plugin){
       $path = plugin_dir_path(__FILE__).'src/'.$name.'.php';
       if(file_exists($path)){
         $name = str_replace('-', '', ucwords($name, '-'));
         require_once($path);
-        $pName = str_replace('-', '_', sanitize_html_class($this->plugin['pluginName']));
+        $pName = str_replace('-', '_', sanitize_html_class($plugin['pluginName']));
         if(class_exists('AspieSoft_'.$pName.'_'.$name)){
           return ${'aspieSoft_'.$pName.'_'.$name};
         }
@@ -204,7 +204,7 @@ if(!class_exists('AspieSoft_Functions_v1_3')){
 
   }
 
-  global $AspieSoft_Functions_v1_3;
-  $AspieSoft_Functions_v1_3 = new AspieSoft_Functions_v1_3();
+  global $aspieSoft_Functions_v1_3;
+  $aspieSoft_Functions_v1_3 = new AspieSoft_Functions_v1_3();
 
 }

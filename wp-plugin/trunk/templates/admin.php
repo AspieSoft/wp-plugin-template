@@ -23,11 +23,11 @@ if(!class_exists('AspieSoft_Settings')){
       $pName = str_replace('-', '_', sanitize_html_class($this->plugin['pluginName']));
       if(class_exists('AspieSoft_'.$pName.'_Settings')){
         $optionList = ${'aspieSoft_'.$pName.'_Settings'}->getOptionList();
-        $optionListGlobal = ${'aspieSoft_'.$pName.'_Settings'}->getOptionListGlobal();
+        //$optionListGlobal = ${'aspieSoft_'.$pName.'_Settings'}->getOptionListGlobal();
       }
 
       $optionList = $options['getList']($optionList);
-      $optionListGlobal = $optionsGlobal['getList']($optionListGlobal);
+      //$optionListGlobal = $optionsGlobal['getList']($optionListGlobal);
 
       if(isset($_POST['UpdateOptions'])){ // if post request, update options
 
@@ -74,7 +74,7 @@ if(!class_exists('AspieSoft_Settings')){
           exit();
         }else if($updateOptions === 'local'){ // update site options
           $options['setList']($optionList, false);
-          $optionsGlobal['setList']($optionListGlobal, false);
+          //$optionsGlobal['setList']($optionListGlobal, false);
 
           // update session expiration
           $sToken['expires'] = round(microtime(true) * 1000)+7200*1000;
@@ -85,7 +85,7 @@ if(!class_exists('AspieSoft_Settings')){
           exit();
         }else if($updateOptions === 'global'){ // update network default options (for multisite)
           $options['setList']($optionList, true);
-          $optionsGlobal['setList']($optionListGlobal, true);
+          //$optionsGlobal['setList']($optionListGlobal, true);
 
           // update session expiration
           $sToken['expires'] = round(microtime(true) * 1000)+7200*1000;
@@ -101,9 +101,9 @@ if(!class_exists('AspieSoft_Settings')){
         exit();
       }else{ // load settings form
         $jsonOptions = array();
-        foreach($optionListGlobal as $k => $v){
+        /*foreach($optionListGlobal as $k => $v){
           $jsonOptions['AspieSoft_Option_'.$k] = $v;
-        }
+        }*/
         foreach($optionList as $k => $v){
           $jsonOptions['AspieSoft_Option_'.$k] = $v;
         }
@@ -123,47 +123,26 @@ if(!class_exists('AspieSoft_Settings')){
         )), false);
 
 
-        add_action('admin_enqueue_settings_scripts', array($this, 'enqueue'));
-        do_action('admin_enqueue_settings_scripts', $json, wp_json_encode(array(
+        $pluginInfoJson = wp_json_encode(array(
           'plugin_name' => esc_html($this->plugin['name']),
           'is_multisite' => !!is_multisite(),
           'can_manage_network' => !!(current_user_can('manage_network_plugins') || current_user_can('manage_network_options') || current_user_can('manage_network')),
-          'settingsToken' => esc_html($settingsToken),
-        )));
+          'settingsToken' => esc_html($settingsToken)
+        ));
 
-        // add form
-        /*$optionsHeader = '<div id="aspiesoft-admin-options-header"><h1>'.$this->plugin['name'].'</h1><div id="aspiesoft-admin-options-menu">';
-        $optionsHeader .= '<input type="button" id="aspiesoft-admin-options-default" value="Restore Defaults">';
-        if(!is_multisite()){
-          $optionsHeader .= '<input type="button" id="aspiesoft-admin-options-save" value="Save Changes">';
-        }else{
-          if(current_user_can('manage_network_plugins') || current_user_can('manage_network_options') || current_user_can('manage_network')){
-            $optionsHeader .= '<input type="button" id="aspiesoft-admin-options-save-global" value="Network Save">';
-          }
-          $optionsHeader .= '<input type="button" id="aspiesoft-admin-options-save" value="Save Changes">';
-        }
-        $optionsHeader .= '</div></div>';
-
-        // generate random session token
-        $settingsToken = str_replace('"', '`', wp_generate_password(64));
-
-        // unique identifier to allow multiple sessions
-        $computerId = hash('sha256', sanitize_text_field($_SERVER['HTTP_USER_AGENT']).sanitize_text_field($_SERVER['LOCAL_ADDR']).sanitize_text_field($_SERVER['LOCAL_PORT']).sanitize_text_field($_SERVER['REMOTE_ADDR']));
-
-        // store session token with expiration ($wp_session was not working)
-        update_option('AspieSoft_Settings_Token'.$computerId, wp_json_encode(array(
-          'token' => $settingsToken,
-          'expires' => round(microtime(true) * 1000)+7200*1000, // 2 hours
-        )), false);
-
-        echo $optionsHeader;
-        echo '<form id="aspiesoft-admin-options"><input type="hidden" name="AspieSoft_Settings_Token" value="'.$settingsToken.'"></form>';*/
-
+        add_action('admin_enqueue_settings_scripts', array($this, 'enqueue'));
+        do_action('admin_enqueue_settings_scripts', array(
+          'json' => $json,
+          'pluginInfo' => $pluginInfoJson,
+        ));
       }
     }
 
-    function enqueue($jsonOptions, $jsonInfo){
-      $ver = '1.1';
+    function enqueue($opts){
+      $jsonOptions = $opts['json'];
+      $jsonInfo = $opts['pluginInfo'];
+
+      $ver = '1.2';
 
       // styles
       wp_enqueue_style('toastr', plugins_url('/../assets/toastr/toastr.min.css', __FILE__), array(), '2.1.4');
@@ -195,8 +174,8 @@ if(!class_exists('AspieSoft_Settings')){
 
       // load common functions
       require_once(plugin_dir_path(__FILE__).'../functions.php');
-      global $AspieSoft_Functions_v1_3;
-      self::$func = $AspieSoft_Functions_v1_3;
+      global $aspieSoft_Functions_v1_3;
+      self::$func = $aspieSoft_Functions_v1_3;
     }
 
   }

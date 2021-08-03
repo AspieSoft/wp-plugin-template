@@ -122,8 +122,8 @@ if(!class_exists('AspieSoft_PluginTemplate')){
       // multiple plugins can use same file in the future (without functions.php class being loaded twice)
       // version added so updates to functions can still occur without breaking other plugins
       require_once(plugin_dir_path(__FILE__).'functions.php');
-      global $AspieSoft_Functions_v1_3;
-      self::$func = $AspieSoft_Functions_v1_3;
+      global $aspieSoft_Functions_v1_3;
+      self::$func = $aspieSoft_Functions_v1_3;
 
       self::$options = self::$func::options($this->plugin);
       self::$optionsGlobal = self::$func::options(array('setting' => 'global'));

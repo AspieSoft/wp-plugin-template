@@ -27,7 +27,7 @@
   }
 
   adminHTML += `
-    </div>
+    </div></div>
     <form id="aspiesoft-admin-options">
       <input type="hidden" name="AspieSoft_Settings_Token" value="${optionsInfo.settingsToken}">
     </form>

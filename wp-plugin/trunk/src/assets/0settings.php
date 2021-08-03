@@ -20,8 +20,8 @@ if(!class_exists('AspieSoft_PluginTemplate_AssetSettings')){
     public function init($pluginData){
       $this->plugin = $pluginData;
       require_once(plugin_dir_path(__FILE__).'../../functions.php');
-      global $AspieSoft_Functions_v1_3;
-      self::$func = $AspieSoft_Functions_v1_3;
+      global $aspieSoft_Functions_v1_3;
+      self::$func = $aspieSoft_Functions_v1_3;
     }
 
     /*public function addScript($scriptBefore){
