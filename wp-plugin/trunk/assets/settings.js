@@ -29,6 +29,7 @@
     return;
   }
 
+
   // add inputs for settings to form
 
   function buildInput(name, inputType, style, value, defaultValue, type, optionsList){

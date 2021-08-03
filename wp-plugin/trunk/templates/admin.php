@@ -109,11 +109,30 @@ if(!class_exists('AspieSoft_Settings')){
         }
         $json = wp_json_encode($jsonOptions);
 
+
+        // generate random session token
+        $settingsToken = str_replace('"', '`', wp_generate_password(64));
+
+        // unique identifier to allow multiple sessions
+        $computerId = hash('sha256', sanitize_text_field($_SERVER['HTTP_USER_AGENT']).sanitize_text_field($_SERVER['LOCAL_ADDR']).sanitize_text_field($_SERVER['LOCAL_PORT']).sanitize_text_field($_SERVER['REMOTE_ADDR']));
+
+        // store session token with expiration ($wp_session was not working)
+        update_option('AspieSoft_Settings_Token'.$computerId, wp_json_encode(array(
+          'token' => $settingsToken,
+          'expires' => round(microtime(true) * 1000)+7200*1000, // 2 hours
+        )), false);
+
+
         add_action('admin_enqueue_settings_scripts', array($this, 'enqueue'));
-        do_action('admin_enqueue_settings_scripts', $json);
+        do_action('admin_enqueue_settings_scripts', $json, wp_json_encode(array(
+          'plugin_name' => esc_html($this->plugin['name']),
+          'is_multisite' => !!is_multisite(),
+          'can_manage_network' => !!(current_user_can('manage_network_plugins') || current_user_can('manage_network_options') || current_user_can('manage_network')),
+          'settingsToken' => esc_html($settingsToken),
+        )));
 
         // add form
-        $optionsHeader = '<div id="aspiesoft-admin-options-header"><h1>'.$this->plugin['name'].'</h1><div id="aspiesoft-admin-options-menu">';
+        /*$optionsHeader = '<div id="aspiesoft-admin-options-header"><h1>'.$this->plugin['name'].'</h1><div id="aspiesoft-admin-options-menu">';
         $optionsHeader .= '<input type="button" id="aspiesoft-admin-options-default" value="Restore Defaults">';
         if(!is_multisite()){
           $optionsHeader .= '<input type="button" id="aspiesoft-admin-options-save" value="Save Changes">';
@@ -138,22 +157,27 @@ if(!class_exists('AspieSoft_Settings')){
         )), false);
 
         echo $optionsHeader;
-        echo '<form id="aspiesoft-admin-options"><input type="hidden" name="AspieSoft_Settings_Token" value="'.$settingsToken.'"></form>';
+        echo '<form id="aspiesoft-admin-options"><input type="hidden" name="AspieSoft_Settings_Token" value="'.$settingsToken.'"></form>';*/
 
       }
     }
 
-    function enqueue($jsonOptions){
+    function enqueue($jsonOptions, $jsonInfo){
+      $ver = '1.1';
+
       // styles
       wp_enqueue_style('toastr', plugins_url('/../assets/toastr/toastr.min.css', __FILE__), array(), '2.1.4');
 
-      wp_enqueue_style('AspieSoft_Settings_Style', plugins_url('/../assets/settings.css', __FILE__), array(), '1.0');
+      wp_enqueue_style('AspieSoft_Settings_Style', plugins_url('/../assets/settings.css', __FILE__), array(), $ver);
 
 
       // scripts
+      wp_enqueue_script('AspieSoft_Settings_AdminPage_Script', plugins_url('/../assets/admin-page.js', __FILE__), array('jquery'), $ver, true);
+      wp_add_inline_script('AspieSoft_Settings_AdminPage_Script', ";var AspieSoftAdminOptionsInfo = $jsonInfo;", 'before');
+
       wp_enqueue_script('toastr', plugins_url('/../assets/toastr/toastr.min.js', __FILE__), array('jquery'), '2.1.4', false);
 
-      wp_enqueue_script('AspieSoft_Settings_Script', plugins_url('/../assets/settings.js', __FILE__), array('jquery'), '1.0', true);
+      wp_enqueue_script('AspieSoft_Settings_Script', plugins_url('/../assets/settings.js', __FILE__), array('jquery'), $ver, true);
       wp_add_inline_script('AspieSoft_Settings_Script', ";var AspieSoftAdminOptionsList = $jsonOptions;", 'before');
     }
 
