@@ -8,7 +8,7 @@
 Plugin Name: AspieSoft Plugin Functions
 Plugin URI: https://github.com/X_AUTHOR_NAME_X/wp-X_PLUGIN_SLUG_X
 Description: Some Useful Plugin Functions by AspieSoft.
-Version: 2.0
+Version: 2.1.0
 Author: AspieSoft
 Author URI: https://www.aspiesoft.com
 License: GPLv2 or later

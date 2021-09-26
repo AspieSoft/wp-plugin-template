@@ -5,9 +5,9 @@ if (!defined('ABSPATH') || !current_user_can('manage_options')) {
   die('404 Not Found');
 }
 
-if (!class_exists('AspieSoft_Settings_v2_0')) {
+if (!class_exists('AspieSoft_Settings_v2_1')) {
 
-  class AspieSoft_Settings_v2_0 {
+  class AspieSoft_Settings_v2_1 {
 
     public $plugin;
 
@@ -202,7 +202,7 @@ if (!class_exists('AspieSoft_Settings_v2_0')) {
       $jsonOptions = $opts['json'];
       $jsonInfo = $opts['pluginInfo'];
 
-      $ver = '2.0';
+      $ver = '2.1';
 
       if ($this->useJSDelivr) {
         // styles
@@ -253,11 +253,11 @@ if (!class_exists('AspieSoft_Settings_v2_0')) {
       );
 
       // load common functions
-      if (!class_exists('AspieSoft_Functions_v2_0')) {
-        require_once(plugin_dir_path(__FILE__) . '../functions/v2_0.php');
+      if (!class_exists('AspieSoft_Functions_v2_1')) {
+        require_once(plugin_dir_path(__FILE__) . '../functions/v2_1.php');
       }
-      global $aspieSoft_Functions_v2_0;
-      self::$func = $aspieSoft_Functions_v2_0::init($this->plugin);
+      global $aspieSoft_Functions_v2_1;
+      self::$func = $aspieSoft_Functions_v2_1::init($this->plugin);
       self::$options = self::$func['options']();
 
       // check if admin chosen to use jsdelivr
@@ -274,7 +274,7 @@ if (!class_exists('AspieSoft_Settings_v2_0')) {
     }
   }
 
-  $aspieSoft_Settings_v2_0 = new AspieSoft_Settings_v2_0();
-  $aspieSoftaspieSoft_Settings_v2_0_Settings->init();
-  $aspieSoft_Settings_v2_0->start();
+  $aspieSoft_Settings_v2_1 = new AspieSoft_Settings_v2_1();
+  $aspieSoft_Settings_v2_1->init();
+  $aspieSoft_Settings_v2_1->start();
 }

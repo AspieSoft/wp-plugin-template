@@ -105,17 +105,17 @@ if (!class_exists('X_AUTHOR_NAME_X_X_PLUGIN_NAME_X')) {
       // get common functions.php file
       // multiple plugins can use same file in the future (without functions.php class being loaded twice)
       // version added so updates to functions can still occur without breaking other plugins
-      if (!class_exists('X_AUTHOR_NAME_X_Functions_v2_0')) {
-        if (file_exists($this->muPluginsDir . 'aspiesoft-plugin-functions/functions/v2_0.php')) {
-          require_once($this->muPluginsDir . 'aspiesoft-plugin-functions/functions/v2_0.php');
+      if (!class_exists('X_AUTHOR_NAME_X_Functions_v2_1')) {
+        if (file_exists($this->muPluginsDir . 'aspiesoft-plugin-functions/functions/v2_1.php')) {
+          require_once($this->muPluginsDir . 'aspiesoft-plugin-functions/functions/v2_1.php');
         } else {
           $this->canAddFunctions = false;
         }
       }
 
       if ($this->canAddFunctions) {
-        global $aspieSoft_Functions_v2_0;
-        self::$func = $aspieSoft_Functions_v2_0::init($this->plugin);
+        global $aspieSoft_Functions_v2_1;
+        self::$func = $aspieSoft_Functions_v2_1::init($this->plugin);
 
         // init options
         self::$options = self::$func['options']();
@@ -272,8 +272,8 @@ if (!class_exists('X_AUTHOR_NAME_X_X_PLUGIN_NAME_X')) {
         $this->updateMuPlugin('index.php', $this->aspiesoftFunctionsMD5Sum_index);
       }
 
-      $this->updateMuPlugin('functions/v2_0.php', $this->aspiesoftFunctionsMD5Sum_Functions);
-      $this->updateMuPlugin('admin-template/v2_0.php', $this->aspiesoftFunctionsMD5Sum_AdminTemplate);
+      $this->updateMuPlugin('functions/v2_1.php', $this->aspiesoftFunctionsMD5Sum_Functions);
+      $this->updateMuPlugin('admin-template/v2_1.php', $this->aspiesoftFunctionsMD5Sum_AdminTemplate);
     }
 
     private function updateMuPlugin($file, $sum) {

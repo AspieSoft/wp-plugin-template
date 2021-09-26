@@ -5,13 +5,13 @@ if (!defined('ABSPATH')) {
   die('404 Not Found');
 }
 
-if (!class_exists('AspieSoft_Functions_v2_0')) {
+if (!class_exists('AspieSoft_Functions_v2_1')) {
 
-  class AspieSoft_Functions_v2_0 {
+  class AspieSoft_Functions_v2_1 {
 
     public static function init($plugin) {
       $functions = array(
-        'version' => 2.0,
+        'version' => 2.1,
 
         'options' => function () use ($plugin) {
           return self::options($plugin);
@@ -549,6 +549,6 @@ if (!class_exists('AspieSoft_Functions_v2_0')) {
     }
   }
 
-  global $aspieSoft_Functions_v2_0;
-  $aspieSoft_Functions_v2_0 = new AspieSoft_Functions_v2_0();
+  global $aspieSoft_Functions_v2_1;
+  $aspieSoft_Functions_v2_1 = new AspieSoft_Functions_v2_1();
 }
