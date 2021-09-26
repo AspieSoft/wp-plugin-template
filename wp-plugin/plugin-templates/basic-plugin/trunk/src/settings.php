@@ -23,11 +23,7 @@ if (!class_exists('X_AUTHOR_NAME_X_X_PLUGIN_NAME_X_Settings')) {
     public function init($plugin) {
       $this->plugin = $plugin;
 
-      if (!class_exists('X_AUTHOR_NAME_X_Functions_v2')) {
-        require_once(plugin_dir_path(__FILE__) . 'functions.php');
-      }
-      global $X_AUTHOR_NAME_VAR_X_Functions_v2;
-      self::$func = $X_AUTHOR_NAME_VAR_X_Functions_v2::init($this->plugin);
+      self::$func = $plugin['func'];
 
       self::$inputList = self::$func['inputList'](array($this, 'optionList'));
 

@@ -89,5 +89,7 @@ while read -r file; do
   fi
 done <<< "$files"
 
+mv "$DIR/wp-plugin/trunk/$optTemplate.php" "$DIR/wp-plugin/trunk/$pluginSlugName.php" 
+
 
 rm -r "$DIR/tmp"

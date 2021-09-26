@@ -1,7 +1,7 @@
 <?php
 
 /**
-* @package AspieSoftPluginTemplate
+* @package AuthorNamePluginName
 */
 
 if (!defined('ABSPATH')) {
@@ -11,9 +11,9 @@ if (!defined('ABSPATH')) {
 
 // file named 0settings so it will be indexed at the top of the src/assets dir
 
-if (!class_exists('AspieSoft_PluginTemplate_AssetSettings')) {
+if (!class_exists('AuthorName_PluginName_AssetSettings')) {
 
-  class AspieSoft_PluginTemplate_AssetSettings {
+  class AuthorName_PluginName_AssetSettings {
 
     public $plugin;
 
@@ -24,12 +24,8 @@ if (!class_exists('AspieSoft_PluginTemplate_AssetSettings')) {
 
     public function init($pluginData) {
       $this->plugin = $pluginData;
-      if (!class_exists('AspieSoft_Functions_v2')) {
-        require_once(plugin_dir_path(__FILE__) . 'functions.php');
-      }
-      global $aspieSoft_Functions_v2;
-      self::$func = $aspieSoft_Functions_v2::init($this->plugin);
-      self::$options = self::$func['options']();
+      self::$func = $this->plugin['func'];
+      self::$options = $this->plugin['options'];
     }
 
 
@@ -40,7 +36,7 @@ if (!class_exists('AspieSoft_PluginTemplate_AssetSettings')) {
       );
 
       $resOpts = wp_json_encode($this->opts);
-      wp_add_inline_script($scriptBefore, ";var AspieSoftPluginTemplateOptions = $resOpts;", 'before');
+      wp_add_inline_script($scriptBefore, ";var AuthorNamePluginNameOptions = $resOpts;", 'before');
     } */
 
     // enqueue inline styles
@@ -56,7 +52,7 @@ if (!class_exists('AspieSoft_PluginTemplate_AssetSettings')) {
       );
 
       $resOpts = wp_json_encode($this->opts);
-      wp_add_inline_script($scriptBefore, ";var AspieSoftPluginTemplateOptions = $resOpts;", 'before');
+      wp_add_inline_script($scriptBefore, ";var AuthorNamePluginNameOptions = $resOpts;", 'before');
     } */
 
     // enqueue inline styles for admin
@@ -66,5 +62,5 @@ if (!class_exists('AspieSoft_PluginTemplate_AssetSettings')) {
 
   }
 
-  $aspieSoft_PluginTemplate_AssetSettings = new AspieSoft_PluginTemplate_AssetSettings();
+  $authorName_PluginName_AssetSettings = new AuthorName_PluginName_AssetSettings();
 }

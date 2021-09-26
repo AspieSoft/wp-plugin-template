@@ -1,13 +1,13 @@
-=== AspieSoft Plugin Template ===
-Contributors: AspieSoft
-Tags: AspieSoft, plugin, template
+=== AuthorName Plugin Name ===
+Contributors: AuthorName
+Tags: AuthorName, plugin, template
 Requires at least: 3.0.1
 Tested up to: 5.8
-Stable tag: 0.0.0
+Stable tag: X_PLUGIN_VERSION_STRICT_X
 Requires PHP: 5.2.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Donate link: https://buymeacoffee.aspiesoft.com
+Donate link: https://donate.example.com
 
 == Description ==
 Plugin Description
@@ -21,7 +21,7 @@ Plugin Description
 == Frequently Asked Questions ==
 
 = How do I use the shortcode? =
-[plugin-template
+[plugin-name
   attr="value example or description"
 ]
 

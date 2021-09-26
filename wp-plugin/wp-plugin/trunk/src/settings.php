@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @package AspieSoftPluginTemplate
+ * @package AuthorNamePluginName
  */
 
 if (!defined('ABSPATH') || !current_user_can('manage_options')) {
@@ -9,8 +9,8 @@ if (!defined('ABSPATH') || !current_user_can('manage_options')) {
   die('404 Not Found');
 }
 
-if (!class_exists('AspieSoft_PluginTemplate_Settings')) {
-  class AspieSoft_PluginTemplate_Settings {
+if (!class_exists('AuthorName_PluginName_Settings')) {
+  class AuthorName_PluginName_Settings {
 
     public $plugin;
 
@@ -23,11 +23,7 @@ if (!class_exists('AspieSoft_PluginTemplate_Settings')) {
     public function init($plugin) {
       $this->plugin = $plugin;
 
-      if (!class_exists('AspieSoft_Functions_v2')) {
-        require_once(plugin_dir_path(__FILE__) . 'functions.php');
-      }
-      global $aspieSoft_Functions_v2;
-      self::$func = $aspieSoft_Functions_v2::init($this->plugin);
+      self::$func = $plugin['func'];
 
       self::$inputList = self::$func['inputList'](array($this, 'optionList'));
 
@@ -71,5 +67,5 @@ if (!class_exists('AspieSoft_PluginTemplate_Settings')) {
     }
   }
 
-  $aspieSoft_PluginTemplate_Settings = new AspieSoft_PluginTemplate_Settings();
+  $authorName_PluginName_Settings = new AuthorName_PluginName_Settings();
 }

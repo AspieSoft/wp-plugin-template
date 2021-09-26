@@ -20,12 +20,8 @@ if (!class_exists('X_AUTHOR_NAME_X_X_PLUGIN_NAME_X_X_FILECLASS_X')) {
     public function init($pluginData) {
       // get plugin data and load common functions
       $this->plugin = $pluginData;
-      if (!class_exists('X_AUTHOR_NAME_X_Functions_v2')) {
-        require_once(plugin_dir_path(__FILE__) . 'functions.php');
-      }
-      global $X_AUTHOR_NAME_VAR_X_Functions_v2;
-      self::$func = $X_AUTHOR_NAME_VAR_X_Functions_v2::init($this->plugin);
-      self::$options = self::$func['options']();
+      self::$func = $this->plugin['func'];
+      self::$options = $this->plugin['options'];
     }
 
     public function start() {

@@ -5,9 +5,9 @@ if (!defined('ABSPATH') || !current_user_can('manage_options')) {
   die('404 Not Found');
 }
 
-if (!class_exists('X_AUTHOR_NAME_X_Settings')) {
+if (!class_exists('AspieSoft_Settings_v2_0')) {
 
-  class X_AUTHOR_NAME_X_Settings {
+  class AspieSoft_Settings_v2_0 {
 
     public $plugin;
 
@@ -32,17 +32,17 @@ if (!class_exists('X_AUTHOR_NAME_X_Settings')) {
         // unique identifier to allow multiple sessions
         $computerId = hash('sha256', sanitize_text_field($_SERVER['HTTP_USER_AGENT']) . sanitize_text_field($_SERVER['LOCAL_ADDR']) . sanitize_text_field($_SERVER['LOCAL_PORT']) . sanitize_text_field($_SERVER['REMOTE_ADDR']));
 
-        if (!isset($_POST['X_AUTHOR_NAME_X_Settings_Token_Key'])) {
+        if (!isset($_POST['AspieSoft_Settings_Token_Key'])) {
           http_response_code(403);
           status_header(403, 'Session Token Invalid or Missing');
           nocache_headers();
           exit('<error>403</error>');
         }
 
-        $tokenKey = sanitize_text_field($_POST['X_AUTHOR_NAME_X_Settings_Token_Key']);
+        $tokenKey = sanitize_text_field($_POST['AspieSoft_Settings_Token_Key']);
 
         // verify session token
-        $settingsToken = get_option('X_AUTHOR_NAME_X_Settings_Token' . $tokenKey . '_' . $computerId);
+        $settingsToken = get_option('AspieSoft_Settings_Token' . $tokenKey . '_' . $computerId);
 
         // send expired if missing
         if (!isset($settingsToken) || $settingsToken == '' || $settingsToken == null) {
@@ -56,7 +56,7 @@ if (!class_exists('X_AUTHOR_NAME_X_Settings')) {
 
         // send expired if expired
         if (!$sToken || !$sToken['expires'] || round(microtime(true) * 1000) > $sToken['expires']) {
-          delete_option('X_AUTHOR_NAME_X_Settings_Token' . $tokenKey . '_' . $computerId);
+          delete_option('AspieSoft_Settings_Token' . $tokenKey . '_' . $computerId);
           http_response_code(401);
           status_header(401, 'Session Expired');
           nocache_headers();
@@ -64,7 +64,7 @@ if (!class_exists('X_AUTHOR_NAME_X_Settings')) {
         }
 
         // send permission error if token not sent
-        if (!isset($_POST['X_AUTHOR_NAME_X_Settings_Token'])) {
+        if (!isset($_POST['AspieSoft_Settings_Token'])) {
           http_response_code(403);
           status_header(403, 'Session Token Invalid or Missing');
           nocache_headers();
@@ -72,7 +72,7 @@ if (!class_exists('X_AUTHOR_NAME_X_Settings')) {
         }
 
         // send permission error if token is not valid
-        if (sanitize_text_field($_POST['X_AUTHOR_NAME_X_Settings_Token']) !== $sToken['token']) {
+        if (sanitize_text_field($_POST['AspieSoft_Settings_Token']) !== $sToken['token']) {
           http_response_code(403);
           status_header(403, 'Session Token Invalid or Missing');
           nocache_headers();
@@ -83,7 +83,7 @@ if (!class_exists('X_AUTHOR_NAME_X_Settings')) {
         // update options
         $updateOptions = sanitize_text_field($_POST['UpdateOptions']);
         if ($updateOptions === 'RemoveSession') { // remove session token
-          delete_option('X_AUTHOR_NAME_X_Settings_Token' . $tokenKey . '_' . $computerId);
+          delete_option('AspieSoft_Settings_Token' . $tokenKey . '_' . $computerId);
 
           // end request with 204 response
           http_response_code(204);
@@ -93,7 +93,7 @@ if (!class_exists('X_AUTHOR_NAME_X_Settings')) {
 
           // update session expiration
           $sToken['expires'] = round(microtime(true) * 1000) + 7200 * 1000;
-          update_option('X_AUTHOR_NAME_X_Settings_Token' . $tokenKey . '_' . $computerId, wp_json_encode($sToken), false);
+          update_option('AspieSoft_Settings_Token' . $tokenKey . '_' . $computerId, wp_json_encode($sToken), false);
 
           // end request with 200 response
           http_response_code(200);
@@ -103,7 +103,7 @@ if (!class_exists('X_AUTHOR_NAME_X_Settings')) {
 
           // update session expiration
           $sToken['expires'] = round(microtime(true) * 1000) + 7200 * 1000;
-          update_option('X_AUTHOR_NAME_X_Settings_Token' . $tokenKey . '_' . $computerId, wp_json_encode($sToken), false);
+          update_option('AspieSoft_Settings_Token' . $tokenKey . '_' . $computerId, wp_json_encode($sToken), false);
 
           // end request with 200 response
           http_response_code(200);
@@ -127,7 +127,7 @@ if (!class_exists('X_AUTHOR_NAME_X_Settings')) {
         $computerId = hash('sha256', sanitize_text_field($_SERVER['HTTP_USER_AGENT']) . sanitize_text_field($_SERVER['LOCAL_ADDR']) . sanitize_text_field($_SERVER['LOCAL_PORT']) . sanitize_text_field($_SERVER['REMOTE_ADDR']));
 
         // store session token with expiration ($wp_session was not working)
-        update_option('X_AUTHOR_NAME_X_Settings_Token' . $tokenKey . '_' . $computerId, wp_json_encode(array(
+        update_option('AspieSoft_Settings_Token' . $tokenKey . '_' . $computerId, wp_json_encode(array(
           'token' => $settingsToken,
           'expires' => round(microtime(true) * 1000) + 7200 * 1000, // 2 hours
         )), false);
@@ -204,22 +204,22 @@ if (!class_exists('X_AUTHOR_NAME_X_Settings')) {
 
       $ver = '2.0';
 
-      if($this->useJSDelivr){
+      if ($this->useJSDelivr) {
         // styles
         wp_enqueue_style('toastr', 'https://cdn.jsdelivr.net/gh/CodeSeven/toastr@2.1.4/build/toastr.min.css', array(), '2.1.4');
 
-        wp_enqueue_style('AspieSoft_Settings_Style', 'https://cdn.jsdelivr.net/gh/AspieSoft/wp-plugin-template@'.$ver.'/wp-plugin/wp-plugin/trunk/assets/settings.min.css', array(), $ver);
+        wp_enqueue_style('AspieSoft_Settings_Style', 'https://cdn.jsdelivr.net/gh/AspieSoft/wp-plugin-template@' . $ver . '/wp-plugin/mu-plugins/aspiesoft-plugin-functions/assets/settings.min.css', array(), $ver);
 
         // scripts
-        wp_enqueue_script('AspieSoft_Settings_AdminPage_Script', 'https://cdn.jsdelivr.net/gh/AspieSoft/wp-plugin-template@'.$ver.'/wp-plugin/wp-plugin/trunk/assets/admin-page.min.js', array('jquery'), $ver, true);
+        wp_enqueue_script('AspieSoft_Settings_AdminPage_Script', 'https://cdn.jsdelivr.net/gh/AspieSoft/wp-plugin-template@' . $ver . '/wp-plugin/mu-plugins/aspiesoft-plugin-functions/assets/admin-page.min.js', array('jquery'), $ver, true);
         wp_add_inline_script('AspieSoft_Settings_AdminPage_Script', ";var AspieSoftAdminOptionsInfo = $jsonInfo;", 'before');
 
         wp_enqueue_script('toastr', 'https://cdn.jsdelivr.net/gh/CodeSeven/toastr@2.1.4/build/toastr.min.js', array('jquery'), '2.1.4', false);
         wp_enqueue_script('random-number-js', 'https://cdn.jsdelivr.net/gh/AspieSoft/random-number-js@1.3.2/script.min.js', array('jquery'), '1.3.2', false);
 
-        wp_enqueue_script('AspieSoft_Settings_Script', 'https://cdn.jsdelivr.net/gh/AspieSoft/wp-plugin-template@'.$ver.'/wp-plugin/wp-plugin/trunk/assets/settings.min.js', array('jquery'), $ver, true);
+        wp_enqueue_script('AspieSoft_Settings_Script', 'https://cdn.jsdelivr.net/gh/AspieSoft/wp-plugin-template@' . $ver . '/wp-plugin/mu-plugins/aspiesoft-plugin-functions/assets/settings.min.js', array('jquery'), $ver, true);
         wp_add_inline_script('AspieSoft_Settings_Script', ";var AspieSoftAdminOptionsList = $jsonOptions;", 'before');
-      }else{
+      } else {
         // styles
         wp_enqueue_style('toastr', plugins_url('/../assets/toastr/toastr.min.css', __FILE__), array(), '2.1.4');
 
@@ -240,7 +240,7 @@ if (!class_exists('X_AUTHOR_NAME_X_Settings')) {
 
     function init() {
       // get plugin data
-      $pluginData = get_plugin_data(WP_PLUGIN_DIR . '/' . sanitize_text_field(constant('PLUGIN_BASENAME_' . basename(plugin_dir_path(dirname(__FILE__, 1))))));
+      $pluginData = get_plugin_data(sanitize_text_field($GLOBALS['ASPIESOFT_CURRENT_PLUGIN_FILE']));
       $this->plugin = array(
         'name' => preg_replace('/\s*\(.*?\)/', '', sanitize_text_field($pluginData['Name'])),
         'setting' => str_replace('-', '', ucwords(sanitize_text_field($pluginData['TextDomain']), '-')),
@@ -249,14 +249,15 @@ if (!class_exists('X_AUTHOR_NAME_X_Settings')) {
         'author' => sanitize_text_field($pluginData['AuthorName']),
         'authorVar' => sanitize_text_field(lcfirst($pluginData['AuthorName'])),
         'pluginName' => str_replace('-', '', ucwords(trim(str_replace(strtolower(sanitize_text_field($pluginData['AuthorName'])), '', strtolower(sanitize_text_field($pluginData['TextDomain']))), '-'), '-')),
+        'dirPath' => plugin_dir_path(__FILE__),
       );
 
       // load common functions
-      if (!class_exists('X_AUTHOR_NAME_X_Functions_v2')) {
-        require_once(plugin_dir_path(__FILE__) . 'functions.php');
+      if (!class_exists('AspieSoft_Functions_v2_0')) {
+        require_once(plugin_dir_path(__FILE__) . '../functions/v2_0.php');
       }
-      global $X_AUTHOR_NAME_VAR_X_Functions_v2;
-      self::$func = $X_AUTHOR_NAME_VAR_X_Functions_v2::init($this->plugin);
+      global $aspieSoft_Functions_v2_0;
+      self::$func = $aspieSoft_Functions_v2_0::init($this->plugin);
       self::$options = self::$func['options']();
 
       // check if admin chosen to use jsdelivr
@@ -273,7 +274,7 @@ if (!class_exists('X_AUTHOR_NAME_X_Settings')) {
     }
   }
 
-  $X_AUTHOR_NAME_VAR_X_Settings = new X_AUTHOR_NAME_X_Settings();
-  $X_AUTHOR_NAME_VAR_X_Settings->init();
-  $X_AUTHOR_NAME_VAR_X_Settings->start();
+  $aspieSoft_Settings_v2_0 = new AspieSoft_Settings_v2_0();
+  $aspieSoftaspieSoft_Settings_v2_0_Settings->init();
+  $aspieSoft_Settings_v2_0->start();
 }

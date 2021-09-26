@@ -88,6 +88,7 @@ optDonationUrl=$(echo "$optDonationUrl" | sed -r "s#\.\$#.${websiteDomain}#")
 optDonationUrl=$(echo "$optDonationUrl" | sed -r "s#^(https?://)\.(/.*?|)#\1${websiteUrl}\2#")
 
 optDonationUrl=$(echo "$optDonationUrl" | sed -r 's#(bmac|coffee)!(\..*?|)$#buymeacoffee\2#')
+optDonationUrl=$(echo "$optDonationUrl" | sed -r 's#(d)!(\..*?|)$#donate\2#')
 
 
 optWebsiteUrl=$(echo "$optWebsiteUrl" | sed -r "s#(!plugin!|p!)#X_PLUGIN_SLUG_X#")
@@ -110,7 +111,7 @@ while read -r file; do
   fi
 done <<< "$files"
 
-files=$(find "$DIR/templates/${optTemplate}/templates" -name '*')
+files=$(find "$DIR/templates/${optTemplate}/templates" -name '*' &>/dev/null)
 while read -r file; do
   if [[ "$file" == *.php ]] ; then
     [ -f "$file" ] || continue

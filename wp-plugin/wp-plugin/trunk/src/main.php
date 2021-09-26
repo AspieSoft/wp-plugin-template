@@ -1,7 +1,7 @@
 <?php
 
 /**
-* @package AspieSoftPluginTemplate
+* @package AuthorNamePluginName
 */
 
 if (!defined('ABSPATH')) {
@@ -9,9 +9,9 @@ if (!defined('ABSPATH')) {
   die('404 Not Found');
 }
 
-if (!class_exists('AspieSoft_PluginTemplate_Main')) {
+if (!class_exists('AuthorName_PluginName_Main')) {
 
-  class AspieSoft_PluginTemplate_Main {
+  class AuthorName_PluginName_Main {
 
     public $plugin;
     private static $func;
@@ -20,12 +20,8 @@ if (!class_exists('AspieSoft_PluginTemplate_Main')) {
     public function init($pluginData) {
       // get plugin data and load common functions
       $this->plugin = $pluginData;
-      if (!class_exists('AspieSoft_Functions_v2')) {
-        require_once(plugin_dir_path(__FILE__) . 'functions.php');
-      }
-      global $aspieSoft_Functions_v2;
-      self::$func = $aspieSoft_Functions_v2::init($this->plugin);
-      self::$options = self::$func['options']();
+      self::$func = $this->plugin['func'];
+      self::$options = $this->plugin['options'];
     }
 
     public function start() {
@@ -33,5 +29,5 @@ if (!class_exists('AspieSoft_PluginTemplate_Main')) {
     }
   }
 
-  $aspieSoft_PluginTemplate_Main = new AspieSoft_PluginTemplate_Main();
+  $authorName_PluginName_Main = new AuthorName_PluginName_Main();
 }

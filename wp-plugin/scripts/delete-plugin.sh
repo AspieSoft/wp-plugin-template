@@ -28,6 +28,34 @@ if ! [ "$input" = "DELETE" ] ; then
 fi
 
 # delete plugin
-rm -r "$DIR/tmp"
-rm -r "$DIR/templates"
-rm -r "$DIR/wp-plugin"
+rm -r "$DIR/tmp" &>/dev/null
+rm -r "$DIR/templates" &>/dev/null
+rm -r "$DIR/wp-plugin" &>/dev/null
+
+
+files=$(find "$DIR/plugin-templates" -maxdepth 1 -name '*')
+while read -r file; do
+  if [[ "$file" != *.zip && "$file" != "$DIR/plugin-templates" ]] ; then
+    fileName=$(echo "$file" | sed -r 's#^.*?/(.*)$#\1#')
+    cd "$file"
+    rm -r "../$fileName.zip" &>/dev/null
+    zip -r -D "../$fileName.zip" . &>/dev/null
+    cd "$DIR"
+  fi
+done <<< "$files"
+
+files=$(find "$DIR/mu-plugins" -maxdepth 1 -name '*')
+while read -r file; do
+  if [[ "$file" != *.zip && "$file" != "$DIR/mu-plugins" ]] ; then
+    fileName=$(echo "$file" | sed -r 's#^.*?/(.*)$#\1#')
+    cd "$file"
+    rm -r "../$fileName.zip" &>/dev/null
+    zip -r -D "../$fileName.zip" . &>/dev/null
+    cd "$DIR"
+  fi
+done <<< "$files"
+
+
+unset input
+unset files
+unset DIR

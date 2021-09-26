@@ -5,12 +5,14 @@ if (!defined('ABSPATH')) {
   die('404 Not Found');
 }
 
-if (!class_exists('X_AUTHOR_NAME_X_Functions_v2')) {
+if (!class_exists('AspieSoft_Functions_v2_0')) {
 
-  class X_AUTHOR_NAME_X_Functions_v2 {
+  class AspieSoft_Functions_v2_0 {
 
     public static function init($plugin) {
       $functions = array(
+        'version' => 2.0,
+
         'options' => function () use ($plugin) {
           return self::options($plugin);
         },
@@ -33,11 +35,15 @@ if (!class_exists('X_AUTHOR_NAME_X_Functions_v2')) {
         'getValue' => function ($attr) {
           return self::getValue($attr);
         },
+        'cloneArray' => function ($arr) {
+          return self::cloneArray($arr);
+        },
+
         'loadPluginFile' => function ($name, $init = false) use ($plugin) {
           return self::loadPluginFile($plugin, $name, $init);
         },
-        'loadJsonFile' => function ($name, $type = 'json') {
-          return self::loadJsonFile($name, $type);
+        'loadJsonFile' => function ($name, $type = 'json') use ($plugin) {
+          return self::loadJsonFile($plugin, $name, $type);
         }
       );
 
@@ -97,8 +103,24 @@ if (!class_exists('X_AUTHOR_NAME_X_Functions_v2')) {
       return null;
     }
 
+    public static function cloneArray($arr) {
+      $newArr = array();
+      foreach ($arr as $key => $val) {
+        if (is_array($val)) {
+          $val = self::cloneArray($val);
+        }
+        $newArr[$key] = $val;
+      }
+      return $newArr;
+    }
+
+
     public static function loadPluginFile($plugin, $name, $init = false) {
-      $path = plugin_dir_path(__FILE__) . 'src/' . $name;
+      $plugin = self::cloneArray($plugin);
+      $plugin['func'] = self::init($plugin);
+      $plugin['options'] = $plugin['func']['options']();
+
+      $path = $plugin['dirPath'] . 'src/' . $name;
       if (!self::endsWith($path, '.php')) {
         $path .= '.php';
       }
@@ -122,8 +144,8 @@ if (!class_exists('X_AUTHOR_NAME_X_Functions_v2')) {
       return null;
     }
 
-    public static function loadJsonFile($name, $type = 'json') {
-      $path = plugin_dir_path(__FILE__) . 'src/' . $name;
+    public static function loadJsonFile($plugin, $name, $type = 'json') {
+      $path = $plugin['dirPath'] . 'src/' . $name;
       if (file_exists($path)) {
         $file = file_get_contents($path);
         if (!$file) {
@@ -174,12 +196,12 @@ if (!class_exists('X_AUTHOR_NAME_X_Functions_v2')) {
     private static function options_get($plugin, $name, $default = null, $type = 'string', $network = null, $global = null) {
       $origName = '';
       if ($global === true) {
-        $name = sanitize_file_name(sanitize_text_field($plugin['author'] . '_' . $name));
+        $name = sanitize_file_name($plugin['author'] . '_' . $name);
       } else if ($global === false) {
-        $name = sanitize_file_name(sanitize_text_field($plugin['setting'] . '_' . $name));
+        $name = sanitize_file_name($plugin['setting'] . '_' . $name);
       } else if ($global === null) {
         $origName = $name;
-        $name = sanitize_file_name(sanitize_text_field($plugin['setting'] . '_' . $name));
+        $name = sanitize_file_name($plugin['setting'] . '_' . $name);
       }
 
       $option = null;
@@ -241,9 +263,9 @@ if (!class_exists('X_AUTHOR_NAME_X_Functions_v2')) {
 
     private static function options_set($plugin, $name, $value, $network = false, $global = false, $autoload = true) {
       if ($global === true) {
-        $name = sanitize_file_name(sanitize_text_field($plugin['author'] . '_' . $name));
+        $name = sanitize_file_name($plugin['author'] . '_' . $name);
       } else if ($global === false || $global === null) {
-        $name = sanitize_file_name(sanitize_text_field($plugin['setting'] . '_' . $name));
+        $name = sanitize_file_name($plugin['setting'] . '_' . $name);
       }
 
       if (is_multisite() && $network) {
@@ -255,9 +277,9 @@ if (!class_exists('X_AUTHOR_NAME_X_Functions_v2')) {
 
     private static function options_del($plugin, $name, $network = false, $global = false) {
       if ($global === true) {
-        $name = sanitize_file_name(sanitize_text_field($plugin['author'] . '_' . $name));
+        $name = sanitize_file_name($plugin['author'] . '_' . $name);
       } else if ($global === false || $global === null) {
-        $name = sanitize_file_name(sanitize_text_field($plugin['setting'] . '_' . $name));
+        $name = sanitize_file_name($plugin['setting'] . '_' . $name);
       }
 
       if (is_multisite() && $network) {
@@ -527,6 +549,6 @@ if (!class_exists('X_AUTHOR_NAME_X_Functions_v2')) {
     }
   }
 
-  global $X_AUTHOR_NAME_VAR_X_Functions_v2;
-  $X_AUTHOR_NAME_VAR_X_Functions_v2 = new X_AUTHOR_NAME_X_Functions_v2();
+  global $aspieSoft_Functions_v2_0;
+  $aspieSoft_Functions_v2_0 = new AspieSoft_Functions_v2_0();
 }

@@ -1,18 +1,18 @@
 <?php
 
 /**
- * @package AspieSoftPluginTemplate
+ * @package X_AUTHOR_NAME_XX_PLUGIN_NAME_X
  */
 
 /*
-Plugin Name: AspieSoft Plugin Template
-Plugin URI: https://github.com/AspieSoft/wp-plugin-template
-Description: A Plugin Template by AspieSoft.
-Version: 0.0.0
-Author: AspieSoft
-Author URI: https://www.aspiesoft.com
+Plugin Name: X_AUTHOR_NAME_X X_PLUGIN_DISPLAY_NAME_X
+Plugin URI: https://github.com/X_AUTHOR_NAME_X/wp-X_PLUGIN_SLUG_X
+Description: A Plugin Template by X_AUTHOR_NAME_X.
+Version: X_PLUGIN_VERSION_STRICT_X
+Author: X_AUTHOR_NAME_X
+Author URI: X_WEBSITE_URL_X
 License: GPLv2 or later
-Text Domain: aspiesoft-plugin-template
+Text Domain: X_AUTHOR_SLUG_X-X_PLUGIN_SLUG_X
 */
 
 /*
@@ -42,13 +42,19 @@ if (!defined('ABSPATH')) {
   die('404 Not Found');
 }
 
-if (!class_exists('AspieSoft_PluginTemplate')) {
-  class AspieSoft_PluginTemplate {
+if (!class_exists('X_AUTHOR_NAME_X_X_PLUGIN_NAME_X')) {
+  class X_AUTHOR_NAME_X_X_PLUGIN_NAME_X {
 
-    public $jsdelivrURL = 'https://cdn.jsdelivr.net/gh/AspieSoft/wp-plugin-template';
+    public $jsdelivrURL = 'https://cdn.jsdelivr.net/gh/X_AUTHOR_NAME_X/wp-X_PLUGIN_SLUG_X';
+
+    private $aspiesoftFunctionsMD5Sum_Functions = '';
+    private $aspiesoftFunctionsMD5Sum_AdminTemplate = '';
 
     public $pluginName;
     public $plugin;
+
+    private $muPluginsDir;
+    private $canAddFunctions = true;
 
     private static $func;
     private static $options;
@@ -85,46 +91,62 @@ if (!class_exists('AspieSoft_PluginTemplate')) {
         'author' => sanitize_text_field($pluginData['AuthorName']),
         'authorVar' => sanitize_text_field(lcfirst($pluginData['AuthorName'])),
         'pluginName' => str_replace('-', '', ucwords(trim(str_replace(strtolower(sanitize_text_field($pluginData['AuthorName'])), '', strtolower(sanitize_text_field($pluginData['TextDomain']))), '-'), '-')),
+        'dirPath' => plugin_dir_path(__FILE__),
       );
 
       if (is_admin()) {
         // add plugin basename to php defined var, for admin template to use get_plugin_data on correct file
-        define('PLUGIN_BASENAME_' . basename(plugin_dir_path(__FILE__)), $this->pluginName);
+        //define('PLUGIN_BASENAME_' . basename(plugin_dir_path(__FILE__)), $this->pluginName);
+        define('ASPIESOFT_CURRENT_PLUGIN_FILE', plugin_dir_path(__FILE__) . $this->pluginName);
       }
+
+      $this->muPluginsDir = plugin_dir_path(__FILE__) . '../../mu-plugins/';
 
       // get common functions.php file
       // multiple plugins can use same file in the future (without functions.php class being loaded twice)
       // version added so updates to functions can still occur without breaking other plugins
-      if (!class_exists('AspieSoft_Functions_v2')) {
-        require_once(plugin_dir_path(__FILE__) . 'functions.php');
-      }
-      global $aspieSoft_Functions_v2;
-      self::$func = $aspieSoft_Functions_v2::init($this->plugin);
-
-      // init options
-      self::$options = self::$func['options']();
-
-      // check if admin chosen to use jsdelivr
-      $jsdelivrOption = self::$options['get']('jsdelivr', 'default');
-      if ($jsdelivrOption === 'default') {
-        $jsdelivrOption = self::$options['get']('jsdelivr', 'local', 'string', null, true);
+      if (!class_exists('X_AUTHOR_NAME_X_Functions_v2_0')) {
+        if (file_exists($this->muPluginsDir . 'aspiesoft-plugin-functions/functions/v2_0.php')) {
+          require_once($this->muPluginsDir . 'aspiesoft-plugin-functions/functions/v2_0.php');
+        } else {
+          $this->canAddFunctions = false;
+        }
       }
 
-      if ($jsdelivrOption === 'jsdelivr') {
-        $this->useJSDelivr = true;
-      } else {
-        $this->useJSDelivr = false;
+      if ($this->canAddFunctions) {
+        global $aspieSoft_Functions_v2_0;
+        self::$func = $aspieSoft_Functions_v2_0::init($this->plugin);
+
+        // init options
+        self::$options = self::$func['options']();
+
+        // check if admin chosen to use jsdelivr
+        $jsdelivrOption = self::$options['get']('jsdelivr', 'default');
+        if ($jsdelivrOption === 'default') {
+          $jsdelivrOption = self::$options['get']('jsdelivr', 'local', 'string', null, true);
+        }
+
+        if ($jsdelivrOption === 'jsdelivr') {
+          $this->useJSDelivr = true;
+        } else {
+          $this->useJSDelivr = false;
+        }
       }
 
 
       if (!is_admin()) {
         // enqueue scripts
         add_action('wp_enqueue_scripts', array($this, 'enqueue'));
-      }else{
-        // add settings page if it exists
-        if (file_exists(plugin_dir_path(__FILE__) . 'src/settings.php')) {
-          add_action('admin_menu', array($this, 'add_admin_pages'));
-          add_filter("plugin_action_links_$this->pluginName", array($this, 'settings_link'));
+      } else {
+        if ($this->canAddFunctions) {
+          // add settings page if it exists
+          if (file_exists(plugin_dir_path(__FILE__) . 'src/settings.php') && file_exists($this->muPluginsDir . 'aspiesoft-plugin-functions/admin_template/v2_0.php')) {
+            // add plugin basename to php defined var, for admin template to use get_plugin_data on correct file
+            $GLOBALS['ASPIESOFT_CURRENT_PLUGIN_FILE'] = plugin_dir_path(__FILE__) . $this->pluginName;
+
+            add_action('admin_menu', array($this, 'add_admin_pages'));
+            add_filter("plugin_action_links_$this->pluginName", array($this, 'settings_link'));
+          }
         }
 
         // admin enqueue scripts
@@ -143,11 +165,13 @@ if (!class_exists('AspieSoft_PluginTemplate')) {
     }
 
     public function admin_index() {
-      require_once(plugin_dir_path(__FILE__) . 'templates/admin.php');
+      require_once($this->muPluginsDir . 'aspiesoft-plugin-functions/admin_template/v2_0.php');
     }
 
 
     public function activate() {
+      $this->installMuPlugin();
+
       if (file_exists(plugin_dir_path(__FILE__) . 'src/settings.php')) {
         $this->enableOptionsAutoload();
       }
@@ -161,10 +185,36 @@ if (!class_exists('AspieSoft_PluginTemplate')) {
       //flush_rewrite_rules();
     }
 
+    public function update() {
+      // grab plugin data to use dynamic to the plugin
+      $pluginData = get_plugin_data(__FILE__);
+      $plugin = array(
+        'setting' => str_replace('-', '', ucwords(sanitize_text_field($pluginData['TextDomain']), '-')),
+        'version' => sanitize_text_field($pluginData['Version']),
+      );
+
+      $name = sanitize_file_name($plugin['setting'] . '_Plugin_Version');
+      $ver = null;
+      if (is_multisite()) {
+        $ver = sanitize_text_field(get_site_option($name));
+        update_site_option($name, $plugin['version'], false);
+      } else {
+        $ver = sanitize_text_field(get_option($name));
+        update_option($name, $plugin['version'], false);
+      }
+
+      if (isset($ver) && $ver !== null && $ver !== $plugin['version']) {
+        $this->installMuPlugin();
+      }
+    }
+
     private function enableOptionsAutoload() {
       // ensure register function ran
       if (!$this->plugin || !self::$func || !self::$options) {
         $this->register();
+      }
+      if (!$this->canAddFunctions) {
+        return;
       }
 
       $settingsPage = self::$func['loadPluginFile']('settings.php', true);
@@ -183,6 +233,9 @@ if (!class_exists('AspieSoft_PluginTemplate')) {
       if (!$this->plugin || !self::$func || !self::$options) {
         $this->register();
       }
+      if (!$this->canAddFunctions) {
+        return;
+      }
 
       $settingsPage = self::$func['loadPluginFile']('settings.php', true);
       $optionList = $settingsPage->getOptionList();
@@ -190,7 +243,7 @@ if (!class_exists('AspieSoft_PluginTemplate')) {
       $this->toggleOptionsAutoload($optionList, false);
     }
 
-    private function toggleOptionsAutoload($optionList, $autoload){
+    private function toggleOptionsAutoload($optionList, $autoload) {
       foreach ($optionList as $name => $data) {
         if (!$data['global']) {
           if ($data['type'] === 'tab') {
@@ -201,6 +254,54 @@ if (!class_exists('AspieSoft_PluginTemplate')) {
               self::$options['set']($name, $value, false, false, $autoload);
             }
           }
+        }
+      }
+    }
+
+
+    private function installMuPlugin() {
+      $this->muPluginsDir = plugin_dir_path(__FILE__) . '../../mu-plugins/';
+
+      if (!file_exists($this->muPluginsDir . 'aspiesoft-plugin-functions') || !is_dir($this->muPluginsDir . 'aspiesoft-plugin-functions')) {
+        if (file_exists($this->muPluginsDir . 'aspiesoft-plugin-functions')) {
+          unlink($this->muPluginsDir . 'aspiesoft-plugin-functions');
+        }
+        mkdir($this->muPluginsDir . 'aspiesoft-plugin-functions', 0755, true);
+
+        $this->updateMuPlugin('index.php', $this->aspiesoftFunctionsMD5Sum_index);
+        $this->updateMuPlugin('index.php', $this->aspiesoftFunctionsMD5Sum_index);
+      }
+
+      $this->updateMuPlugin('functions/v2_0.php', $this->aspiesoftFunctionsMD5Sum_Functions);
+      $this->updateMuPlugin('admin-template/v2_0.php', $this->aspiesoftFunctionsMD5Sum_AdminTemplate);
+    }
+
+    private function updateMuPlugin($file, $sum) {
+      if (!file_exists($this->muPluginsDir . 'aspiesoft-plugin-functions/' . $file)) {
+        $tmpFile = download_url('https://cdn.jsdelivr.net/gh/AspieSoft/wp-plugin-template@2.0/wp-plugin/mu-plugins/aspiesoft-plugin-functions/' . $file, 300);
+        $md5check = verify_file_md5($tmpFile, $sum);
+        if (!$md5check || is_wp_error($md5check)) {
+          unlink($tmpFile);
+          return;
+        }
+
+        $dir = preg_replace('/\/.*?$/', '', $file);
+
+        if (!file_exists($this->muPluginsDir . 'aspiesoft-plugin-functions/' . $dir) || !is_dir($this->muPluginsDir . 'aspiesoft-plugin-functions/' . $dir)) {
+          if (file_exists($this->muPluginsDir . 'aspiesoft-plugin-functions/' . $dir)) {
+            unlink($this->muPluginsDir . 'aspiesoft-plugin-functions/' . $dir);
+          }
+          mkdir($this->muPluginsDir . 'aspiesoft-plugin-functions/' . $dir, 0755, true);
+        }
+
+        copy($tmpFile, $this->muPluginsDir . 'aspiesoft-plugin-functions/' . $file);
+        unlink($tmpFile);
+      } else {
+        $md5check = verify_file_md5($this->muPluginsDir . 'aspiesoft-plugin-functions/' . $file, $sum);
+        if (!$md5check || is_wp_error($md5check)) {
+          unlink($this->muPluginsDir . 'aspiesoft-plugin-functions/' . $file);
+          $this->updateMuPlugin($file, $sum);
+          return;
         }
       }
     }
@@ -303,11 +404,13 @@ if (!class_exists('AspieSoft_PluginTemplate')) {
     }
   }
 
-  $aspieSoft_PluginTemplate = new AspieSoft_PluginTemplate();
-  $aspieSoft_PluginTemplate->register();
+  $X_AUTHOR_NAME_VAR_X_X_PLUGIN_NAME_X = new X_AUTHOR_NAME_X_X_PLUGIN_NAME_X();
+  $X_AUTHOR_NAME_VAR_X_X_PLUGIN_NAME_X->register();
 
-  register_activation_hook(__FILE__, array($aspieSoft_PluginTemplate, 'activate'));
-  register_deactivation_hook(__FILE__, array($aspieSoft_PluginTemplate, 'deactivate'));
+  register_activation_hook(__FILE__, array($X_AUTHOR_NAME_VAR_X_X_PLUGIN_NAME_X, 'activate'));
+  register_deactivation_hook(__FILE__, array($X_AUTHOR_NAME_VAR_X_X_PLUGIN_NAME_X, 'deactivate'));
 
-  add_action('init', array($aspieSoft_PluginTemplate, 'start'));
+  add_action('upgrader_process_complete', array($X_AUTHOR_NAME_VAR_X_X_PLUGIN_NAME_X, 'update'));
+
+  add_action('init', array($X_AUTHOR_NAME_VAR_X_X_PLUGIN_NAME_X, 'start'));
 }
