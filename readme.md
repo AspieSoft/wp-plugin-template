@@ -2,7 +2,19 @@
 
 I recommend creating a fork of this project, and globally replacing (AspieSoft, aspieSoft, aspiesoft) with your github name (keep caps consistent).
 
-You should also globally replace (PluginTemplate, Plugin Template, plugin-template) with your plugin name for each project (keep caps consistent).
+You can run a search and replace for variables such as `X_AUTHOR_NAME_X`, `X_PLUGIN_NAME_X`, `X_AUTHOR_SLUG_X`, etc.
+
+The First **wp-plugin/** directory is where the entire wordpress plugin lives.
+You can use the outside of this directory for other things unrelated to wordpress.
+
+The Second **wp-plugin/** directory is the actual plugin that gets submitted to wordpress.
+
+> Note: The Below Description Has Not Been Updated Yet.
+> You Can Now Use A Linux Bash Script To Generate The Plugin.
+> The Windows Version Has Not Been Created Yet.
+> To start using the bash script, just open a terminal in the folder and run ./run.sh
+> I Recommend running the **Delete Plugin** Option to remove the template plugin, then go through the steps to build your own.
+> The directory structure in 2.0 is still consistant to the info below.
 
 ---
 
