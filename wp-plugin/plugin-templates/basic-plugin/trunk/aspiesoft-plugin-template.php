@@ -297,7 +297,7 @@ if (!class_exists('X_AUTHOR_NAME_X_X_PLUGIN_NAME_X')) {
         $path = '/' . $path;
       }
       if ($this->useJSDelivr) {
-        return $this->jsdelivrURL . '@' . $this->plugin['version'] . '/wp-plugin/trunk/src/assets' . preg_replace('/(?:\.min|)\.(js|css)$/', '.min.$1', $path);
+        return $this->jsdelivrURL . '@' . $this->plugin['version'] . '/wp-plugin/wp-plugin/trunk/src/assets' . preg_replace('/(?:\.min|)\.(js|css)$/', '.min.$1', $path);
       }
       return plugins_url('/src/assets' . $path, __FILE__);
     }
