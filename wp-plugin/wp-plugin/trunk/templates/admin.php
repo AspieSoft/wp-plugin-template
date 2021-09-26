@@ -208,16 +208,16 @@ if (!class_exists('AspieSoft_Settings')) {
         // styles
         wp_enqueue_style('toastr', 'https://cdn.jsdelivr.net/gh/CodeSeven/toastr@2.1.4/build/toastr.min.css', array(), '2.1.4');
 
-        wp_enqueue_style('AspieSoft_Settings_Style', 'https://cdn.jsdelivr.net/gh/AspieSoft/random-number-js@'.$ver.'/wp-plugin/trunk/assets/settings.min.css', array(), $ver);
+        wp_enqueue_style('AspieSoft_Settings_Style', 'https://cdn.jsdelivr.net/gh/AspieSoft/wp-plugin-template@'.$ver.'/wp-plugin/wp-plugin/trunk/assets/settings.min.css', array(), $ver);
 
         // scripts
-        wp_enqueue_script('AspieSoft_Settings_AdminPage_Script', 'https://cdn.jsdelivr.net/gh/AspieSoft/random-number-js@'.$ver.'/wp-plugin/trunk/assets/admin-page.min.js', array('jquery'), $ver, true);
+        wp_enqueue_script('AspieSoft_Settings_AdminPage_Script', 'https://cdn.jsdelivr.net/gh/AspieSoft/wp-plugin-template@'.$ver.'/wp-plugin/wp-plugin/trunk/assets/admin-page.min.js', array('jquery'), $ver, true);
         wp_add_inline_script('AspieSoft_Settings_AdminPage_Script', ";var AspieSoftAdminOptionsInfo = $jsonInfo;", 'before');
 
         wp_enqueue_script('toastr', 'https://cdn.jsdelivr.net/gh/CodeSeven/toastr@2.1.4/build/toastr.min.js', array('jquery'), '2.1.4', false);
         wp_enqueue_script('random-number-js', 'https://cdn.jsdelivr.net/gh/AspieSoft/random-number-js@1.3.2/script.min.js', array('jquery'), '1.3.2', false);
 
-        wp_enqueue_script('AspieSoft_Settings_Script', 'https://cdn.jsdelivr.net/gh/AspieSoft/random-number-js@'.$ver.'/wp-plugin/trunk/assets/settings.min.js', array('jquery'), $ver, true);
+        wp_enqueue_script('AspieSoft_Settings_Script', 'https://cdn.jsdelivr.net/gh/AspieSoft/wp-plugin-template@'.$ver.'/wp-plugin/wp-plugin/trunk/assets/settings.min.js', array('jquery'), $ver, true);
         wp_add_inline_script('AspieSoft_Settings_Script', ";var AspieSoftAdminOptionsList = $jsonOptions;", 'before');
       }else{
         // styles
