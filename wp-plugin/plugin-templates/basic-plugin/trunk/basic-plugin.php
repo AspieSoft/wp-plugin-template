@@ -47,8 +47,8 @@ if (!class_exists('X_AUTHOR_NAME_X_X_PLUGIN_NAME_X')) {
 
     public $jsdelivrURL = 'https://cdn.jsdelivr.net/gh/X_AUTHOR_NAME_X/wp-X_PLUGIN_SLUG_X';
 
-    private $aspiesoftFunctionsMD5Sum_Functions = '';
-    private $aspiesoftFunctionsMD5Sum_AdminTemplate = '';
+    private $aspiesoftFunctionsMD5Sum_Functions = 'f646e0ca3eb9b6cc63768430c73eade8';
+    private $aspiesoftFunctionsMD5Sum_AdminTemplate = '7f47b8aa05e27c0a9e87824753d244bd';
 
     public $pluginName;
     public $plugin;
