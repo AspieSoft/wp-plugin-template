@@ -6,6 +6,9 @@ optChanges="$2"
 DIR=$(dirname "$(readlink -f "$0")")
 DIR=$(echo "$DIR" | sed -r 's#/scripts$##')
 
+FolderName=$(echo "$DIR" | sed -r 's#/wp-plugin$##')
+FolderName=$(echo "$FolderName" | sed -r 's#.*/##')
+
 
 if [ "$optVer" = "" ] ; then
   read -p "Version: " -e optVer
@@ -50,10 +53,12 @@ while read -r file; do
 done <<< "$files"
 
 
-mkdir -p "$DIR/tmp" && cp -Rf "$DIR/wp-plugin/trunk" "$DIR/tmp" &>/dev/null
+rm -r "$DIR/../dist" &>/dev/null
+mkdir -p "$DIR/../dist/wp-plugin" && cp -Rf "$DIR/wp-plugin/trunk" "$DIR/../dist/wp-plugin" &>/dev/null
+cp -Rf "$DIR/wp-plugin/assets" "$DIR/../dist/wp-plugin" &>/dev/null
 
 
-files=$(find "$DIR/tmp/trunk" -name '*')
+files=$(find "$DIR/../dist/wp-plugin/trunk" -name '*')
 while read -r file; do
   if [[ ("$file" == *.php) || ("$file" == */readme.txt) ]] ; then
     [ -f "$file" ] || continue
@@ -63,9 +68,9 @@ while read -r file; do
 done <<< "$files"
 
 
-cd "$DIR/tmp/trunk"
-zip -r -D "../../wp-plugin/$pluginName.zip" . &>/dev/null
+cd "$DIR/../dist/wp-plugin/trunk"
+
+mv "$pluginName.php" "$FolderName.php"
+
+zip -r -D "../../$FolderName.zip" . &>/dev/null
 cd "$DIR"
-
-
-rm -r "$DIR/tmp"

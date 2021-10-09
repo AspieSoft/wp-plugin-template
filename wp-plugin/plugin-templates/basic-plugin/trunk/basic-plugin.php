@@ -140,7 +140,7 @@ if (!class_exists('X_AUTHOR_NAME_X_X_PLUGIN_NAME_X')) {
       } else {
         if ($this->canAddFunctions) {
           // add settings page if it exists
-          if (file_exists(plugin_dir_path(__FILE__) . 'src/settings.php') && file_exists($this->muPluginsDir . 'aspiesoft-plugin-functions/admin_template/v2_0.php')) {
+          if (file_exists(plugin_dir_path(__FILE__) . 'src/settings.php') && file_exists($this->muPluginsDir . 'aspiesoft-plugin-functions/admin_template/v2_1.php')) {
             // add plugin basename to php defined var, for admin template to use get_plugin_data on correct file
             $GLOBALS['ASPIESOFT_CURRENT_PLUGIN_FILE'] = plugin_dir_path(__FILE__) . $this->pluginName;
 
@@ -165,7 +165,7 @@ if (!class_exists('X_AUTHOR_NAME_X_X_PLUGIN_NAME_X')) {
     }
 
     public function admin_index() {
-      require_once($this->muPluginsDir . 'aspiesoft-plugin-functions/admin_template/v2_0.php');
+      require_once($this->muPluginsDir . 'aspiesoft-plugin-functions/admin_template/v2_1.php');
     }
 
 
@@ -278,7 +278,7 @@ if (!class_exists('X_AUTHOR_NAME_X_X_PLUGIN_NAME_X')) {
 
     private function updateMuPlugin($file, $sum) {
       if (!file_exists($this->muPluginsDir . 'aspiesoft-plugin-functions/' . $file)) {
-        $tmpFile = download_url('https://cdn.jsdelivr.net/gh/AspieSoft/wp-plugin-template@2.0/wp-plugin/mu-plugins/aspiesoft-plugin-functions/' . $file, 300);
+        $tmpFile = download_url('https://cdn.jsdelivr.net/gh/AspieSoft/wp-plugin-template@2.1/wp-plugin/mu-plugins/aspiesoft-plugin-functions/' . $file, 300);
         $md5check = verify_file_md5($tmpFile, $sum);
         if (!$md5check || is_wp_error($md5check)) {
           unlink($tmpFile);

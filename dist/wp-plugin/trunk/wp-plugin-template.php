@@ -8,7 +8,7 @@
 Plugin Name: AuthorName Plugin Name
 Plugin URI: https://github.com/AuthorName/wp-plugin-name
 Description: A Plugin Template by AuthorName.
-Version: X_PLUGIN_VERSION_STRICT_X
+Version: 1.0.0
 Author: AuthorName
 Author URI: https://www.example.com
 License: GPLv2 or later
